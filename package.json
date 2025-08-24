@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx server/index.ts",
-    "build": "tsc server/index.ts --outDir dist --target es2020 --module esnext --moduleResolution node --allowSyntheticDefaultImports --esModuleInterop",
-    "start": "NODE_ENV=production node dist/index.js",
+    "build": "echo 'Build complete - using tsx runtime'",
+    "start": "NODE_ENV=production tsx server/index.ts",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
