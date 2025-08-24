@@ -126,4 +126,4 @@ This backend includes:
 - EFT payment support
 - POS system access
 
-All configured for themosthigh.co.za domain with proper CORS settings.
+All configured for themosthigh.co.za domain with proper CORS settings.# Railway deployment fix
