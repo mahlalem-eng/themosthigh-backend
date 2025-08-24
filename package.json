@@ -22,7 +22,8 @@
   "stripe": "^18.4.0",
   "zod": "^3.24.2",
   "zod-validation-error": "^3.4.0",
-  "esbuild": "^0.21.0"
+  
+"esbuild": "^0.21.0"
 }
 ,
  "devDependencies": {
