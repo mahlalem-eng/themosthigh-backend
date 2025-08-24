@@ -1,9 +1,13 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
-import { registerRoutes } from "./routes";
+
+console.log("🔄 Starting server initialization...");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+console.log(`📍 Port configured: ${PORT}`);
+console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 
 // CORS Configuration for Railway + cPanel setup
 app.use((req, res, next) => {
@@ -37,10 +41,15 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+console.log("✅ Express middleware configured");
+
 // Health check endpoint for Railway
 app.get('/health', (req, res) => {
+  console.log("💓 Health check requested");
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
+
+console.log("✅ Health check endpoint configured");
 
 // Session configuration
 app.use(session({
@@ -55,6 +64,8 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
+
+console.log("✅ Session middleware configured");
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -82,20 +93,75 @@ app.use((req, res, next) => {
   next();
 });
 
+console.log("✅ Logging middleware configured");
+
+// Fallback route registration in case registerRoutes fails
+app.get('/', (req, res) => {
+  res.json({ 
+    status: 'Server is running',
+    message: 'The Most High API',
+    timestamp: new Date().toISOString()
+  });
+});
+
 async function startServer() {
   try {
-    const server = await registerRoutes(app);
+    console.log("🔄 Attempting to register routes...");
     
-    server.listen(PORT, '0.0.0.0', () => {
+    // Try to import and register routes
+    let server = app;
+    try {
+      const { registerRoutes } = await import("./routes");
+      console.log("✅ Routes module imported successfully");
+      server = await registerRoutes(app);
+      console.log("✅ Routes registered successfully");
+    } catch (routeError) {
+      console.error("⚠️  Routes registration failed:", routeError);
+      console.log("🔄 Continuing with basic server setup...");
+      
+      // Add a basic API route as fallback
+      app.get('/api/status', (req, res) => {
+        res.json({ 
+          status: 'API running in fallback mode',
+          error: 'Routes not loaded',
+          timestamp: new Date().toISOString()
+        });
+      });
+    }
+    
+    console.log(`🔄 Starting server on port ${PORT}...`);
+    
+    const httpServer = server.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 Health check: http://localhost:${PORT}/health`);
+      console.log(`🌐 Server accessible at: http://0.0.0.0:${PORT}`);
       console.log(`🌿 API ready for The Most High dispensary`);
+    });
+
+    // Handle server errors
+    httpServer.on('error', (error: any) => {
+      console.error("❌ Server error:", error);
+      if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use`);
+      }
+      process.exit(1);
+    });
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      console.log('📴 SIGTERM received. Shutting down gracefully...');
+      httpServer.close(() => {
+        console.log('✅ Server closed.');
+        process.exit(0);
+      });
     });
 
   } catch (error) {
     console.error("❌ Failed to start server:", error);
+    console.error("❌ Stack trace:", error instanceof Error ? error.stack : 'Unknown error');
     process.exit(1);
   }
 }
 
+console.log("🔄 Calling startServer...");
 startServer();
