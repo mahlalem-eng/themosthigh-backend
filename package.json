@@ -18,6 +18,7 @@
     "express": "^4.21.2",
     "express-session": "^1.18.2",
     "memorystore": "^1.6.7",
+    "stripe": "^18.4.0",
     "zod": "^3.24.2",
     "zod-validation-error": "^3.4.0"
   },

@@ -5,7 +5,7 @@ import { db } from "./db";
 import { sales, membershipApplications } from "@shared/schema";
 import { and, sql, or, eq } from "drizzle-orm";
 import { insertProductSchema, insertCartItemSchema, insertOrderSchema, insertMembershipApplicationSchema } from "@shared/schema";
-import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+//import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import Stripe from "stripe";
 
 // Initialize Stripe with fallback for development
@@ -339,7 +339,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: 'Failed to verify member' });
     }
   });
-
+/*
   // Object storage routes for ID document upload
   app.post("/api/objects/upload", async (req, res) => {
     const objectStorageService = new ObjectStorageService();
@@ -367,7 +367,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(500).json({ error: "Internal server error" });
     }
   });
-
+*/
   // POS System routes
   app.post('/api/pos/sales', async (req, res) => {
     try {
