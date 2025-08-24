@@ -2,9 +2,9 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { db } from "./db";
-import { sales, membershipApplications } from "@shared/schema";
+import { sales, membershipApplications } from "../shared/schema";
 import { and, sql, or, eq } from "drizzle-orm";
-import { insertProductSchema, insertCartItemSchema, insertOrderSchema, insertMembershipApplicationSchema } from "@shared/schema";
+import { insertProductSchema, insertCartItemSchema, insertOrderSchema, insertMembershipApplicationSchema } from "../shared/schema";
 //import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
 import Stripe from "stripe";
 
